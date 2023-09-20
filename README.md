@@ -16,11 +16,13 @@ The following required functionality is completed:
     N/A
 
 ## Video Walkthrough
+https://www.loom.com/share/ab5ae8dc080a4185ad7ba65b30d4a477?sid=6f872505-33df-4bc2-8468-41fede19d8e0
 
 
 ## Notes
 
-Safeargs plugin wasn't working
+Safeargs plugin wasn't working.
+Video is not gif. At the last minute, I realized the screen capture applciation i used started charging to download videos.
 
 ## License
 

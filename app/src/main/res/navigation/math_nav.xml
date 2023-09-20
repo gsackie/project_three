@@ -1,0 +1,40 @@
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/math_nav"
+    app:startDestination="@id/mainActivity">
+
+    <activity
+        android:id="@+id/mainActivity"
+        android:name="MainActivity"
+        android:label="MainActivity" >
+        <action
+            android:id="@+id/action_mainActivity_to_questionsFragment"
+            app:destination="@id/questionsFragment" />
+    </activity>
+
+    <fragment
+        android:id="@+id/questionsFragment"
+        android:name="QuestionsFragment"
+        android:label="QuestionsFragment" >
+        <action
+            android:id="@+id/action_questionsFragment_to_resultsFragment"
+            app:destination="@id/resultsFragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/resultsFragment"
+        android:name="com.example.project_three.ResultsFragment"
+        android:label="fragment_results"
+        tools:layout="@layout/fragment_results" >
+
+        <argument
+            android:name="scoreText"
+            app:argType="string"
+            />
+
+        <action
+            android:id="@+id/action_resultsFragment_to_mainActivity"
+            app:destination="@id/mainActivity" />
+    </fragment>
+</navigation>

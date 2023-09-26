@@ -27,6 +27,9 @@ class MainActivity : AppCompatActivity() {
                 R.id.mediumRadioButton -> "Medium"
                 R.id.hardRadioButton -> "Hard"
                 else -> "Easy" // Default to Easy if nothing is selected
+
+
+
             }
 
             val operationRadioGroup = findViewById<RadioGroup>(R.id.operationRadioGroup)

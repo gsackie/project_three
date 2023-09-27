@@ -3,13 +3,8 @@ import android.widget.Button
 import android.widget.RadioGroup
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
-import androidx.navigation.NavController
 import androidx.navigation.findNavController
-import androidx.navigation.fragment.NavHostFragment
-import androidx.navigation.ui.AppBarConfiguration
-import androidx.navigation.ui.NavigationUI
 import com.example.project_three.R
-
 
 class MainActivity : AppCompatActivity() {
 
@@ -27,9 +22,6 @@ class MainActivity : AppCompatActivity() {
                 R.id.mediumRadioButton -> "Medium"
                 R.id.hardRadioButton -> "Hard"
                 else -> "Easy" // Default to Easy if nothing is selected
-
-
-
             }
 
             val operationRadioGroup = findViewById<RadioGroup>(R.id.operationRadioGroup)
@@ -49,10 +41,50 @@ class MainActivity : AppCompatActivity() {
             bundle.putString("operation", selectedOperation)
             bundle.putInt("numberOfQuestions", numberOfQuestions)
 
+
+            //This is the safeargs implementation
+            /*
+            // Use SafeArgs to navigate to the QuestionsFragment
+            val action = MainActivityDirections.actionMainActivityToQuestionsFragment(
+                numberOfQuestions = numberOfQuestions,
+                difficulty = selectedDifficulty,
+                operation = selectedOperation
+            )
+
+            findNavController(R.id.nav_host_fragment).navigate(action)
+        }
+             */
+
             // Navigate to the QuestionsFragment with the selected options
             val navController = findNavController(R.id.nav_host_fragment)
-            navController.navigate(R.id.action_mainActivity_to_questionsFragment)
+            navController.navigate(R.id.action_mainActivity_to_questionsFragment, bundle)
+        }
 
+        //This is the safeargs implementation
+
+        /*
+        // Check if there are results passed from QuestionsFragment using SafeArgs
+        val isPassed = args.isPassed
+        val userScore = args.userScore
+        val numberOfQuestions = args.numberOfQuestions
+         */
+
+
+        // Check if there are results passed from QuestionsFragment
+        val isPassed = intent.getBooleanExtra("isPassed", false)
+        val userScore = intent.getIntExtra("userScore", 0)
+
+
+        // Display the results in a TextView
+        val resultsTextView = findViewById<TextView>(R.id.resultsTextView)
+        val numberOfQuestions = intent.getIntExtra("numberOfQuestions", 0)
+
+        if (isPassed) {
+            resultsTextView.text = "Congratulations! You passed with a score of $userScore out of $numberOfQuestions."
+            resultsTextView.setTextColor(resources.getColor(android.R.color.black)) // Set text color to black for success
+        } else {
+            resultsTextView.text = "You need more practice. Your score is $userScore out of $numberOfQuestions."
+            resultsTextView.setTextColor(resources.getColor(android.R.color.holo_red_dark)) // Set text color to red for failure
         }
     }
 }

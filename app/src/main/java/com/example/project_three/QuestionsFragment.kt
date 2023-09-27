@@ -1,3 +1,6 @@
+import android.app.Activity
+import android.content.Intent
+import android.media.MediaPlayer
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -7,17 +10,24 @@ import android.widget.EditText
 import android.widget.RadioButton
 import android.widget.RadioGroup
 import android.widget.TextView
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.commit
+import androidx.navigation.fragment.navArgs
 import com.example.project_three.R
 
 class QuestionsFragment : Fragment() {
+    //private val args: QuestionsFragment by navArgs() // Use SafeArgs to retrieve arguments
+
 
     // Variables to keep track of the current question and correct answers
     private var currentQuestionIndex = 0
     private var correctAnswers = 0
     private lateinit var questions: List<Question>
     private lateinit var answerEditText: EditText
+    private lateinit var correctSoundPlayer: MediaPlayer
+    private lateinit var incorrectSoundPlayer: MediaPlayer
+
 
     // This function inflates the layout for this fragment
     override fun onCreateView(
@@ -30,6 +40,12 @@ class QuestionsFragment : Fragment() {
     // This function is called after the view has been created
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        // Initialize the MediaPlayer objects
+        correctSoundPlayer = MediaPlayer.create(requireContext(), R.raw.positive)
+        incorrectSoundPlayer = MediaPlayer.create(requireContext(), R.raw.negative)
+
+
 
         // Retrieve the number of questions from the fragment arguments, default to 0 if not provided
         val numQuestions = arguments?.getInt("numberOfQuestions") ?: 0
@@ -50,6 +66,7 @@ class QuestionsFragment : Fragment() {
         val difficulty = difficultyRadioButton.text.toString().toLowerCase()
         val operation = operationRadioButton.text.toString().toLowerCase()
 
+
         // Find the answer EditText in the layout
         answerEditText = view.findViewById<EditText>(R.id.answerEditText) ?: EditText(requireContext())
 
@@ -62,29 +79,62 @@ class QuestionsFragment : Fragment() {
         // Find the "Done" button and set a click listener
         val doneButton = view.findViewById<Button>(R.id.button_done)
         doneButton.setOnClickListener {
-            // Check the user's answer, move to the next question, or navigate to the results screen
+            // Check the user's answer and move to the next question
             checkAnswer()
             currentQuestionIndex++
             if (currentQuestionIndex < questions.size) {
                 showQuestion(questions[currentQuestionIndex])
             } else {
-                // All questions answered, navigate to the result screen
-                val scoreText = "Your score: $correctAnswers out of $numQuestions"
+                // All questions answered, prepare the result and return to the first activity
+                val totalQuestions = questions.size
+                val userScore = correctAnswers
 
-                val bundle = Bundle()
-                bundle.putString("scoreText", scoreText)
+                // Check if the user passed (80% or more correct)
+                val isPassed = userScore >= (0.8 * totalQuestions)
 
-                val resultsFragment = ResultsFragment()
-                resultsFragment.arguments = bundle
-
-                // Replace the current fragment with the results fragment
-                requireActivity().supportFragmentManager.commit {
-                    replace(R.id.questionsFragment, resultsFragment)
-                    addToBackStack(null)
+                // Prepare the result message
+                val resultMessage = if (isPassed) {
+                    "You got $userScore out of $totalQuestions correct. Good Job!"
+                } else {
+                    "You got $userScore out of $totalQuestions correct. You need to practice more."
                 }
+
+                // Display the result message using Toast
+                showToast(resultMessage)
+
+                // Create an intent to pass the results back to the first activity
+                val resultIntent = Intent()
+                resultIntent.putExtra("isPassed", isPassed)
+                resultIntent.putExtra("userScore", userScore)
+
+                // Set the result code to indicate success
+                requireActivity().setResult(Activity.RESULT_OK, resultIntent)
+
+                // Finish the current activity (second activity)
+                requireActivity().finish()
             }
         }
     }
+    //This is the code to implement SafeArgs
+    //
+
+    /*
+        // Retrieve the number of questions from SafeArgs
+        val numQuestions = args.numberOfQuestions
+
+        // Retrieve selected difficulty and operation from SafeArgs
+        val difficulty = args.difficulty
+        val operation = args.operation
+
+      // Navigate to MainActivity using SafeArgs
+                val action = QuestionsFragmentDirections.actionQuestionsFragmentToMainActivity(
+                    isPassed = isPassed,
+                    userScore = userScore,
+                    numberOfQuestions = totalQuestions
+                )
+
+                findNavController().navigate(action)
+     */
 
     // This function displays the current question on the screen
     private fun showQuestion(question: Question) {
@@ -105,13 +155,33 @@ class QuestionsFragment : Fragment() {
 
     // This function checks the user's answer and updates the correctAnswers count
     private fun checkAnswer() {
-        val userAnswer = answerEditText.text.toString().toIntOrNull()
+        val userAnswerText = answerEditText.text.toString()
         val correctAnswer = questions[currentQuestionIndex].correctAnswer
 
-        if (userAnswer != null && userAnswer == correctAnswer) {
-            correctAnswers++
+        // Check if the user's input is a valid integer
+        val userAnswer = userAnswerText.toIntOrNull()
+
+        if (userAnswer != null) {
+            if (userAnswer == correctAnswer) {
+                // Display a Toast for a correct answer and play the correct sound
+                correctSoundPlayer.start()
+                showToast("Correct. Good work!")
+                correctAnswers++
+            } else {
+                // Display a Toast for a wrong answer and play the incorrect sound
+                incorrectSoundPlayer.start()
+                showToast("Wrong")
+            }
+        } else {
+            // Display a Toast for an invalid input
+            showToast("Invalid input. Please enter a number.")
         }
     }
+
+    private fun showToast(message: String) {
+        Toast.makeText(requireContext(), message, Toast.LENGTH_SHORT).show()
+    }
+
 
     // This function generates a list of questions based on difficulty, operation, and number of questions
     private fun generateQuestions(

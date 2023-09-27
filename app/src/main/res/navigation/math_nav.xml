@@ -16,10 +16,13 @@
     <fragment
         android:id="@+id/questionsFragment"
         android:name="QuestionsFragment"
-        android:label="QuestionsFragment" >
+        android:label="QuestionsFragment">
+        <!-- This is the argument that we pass to the ResultsFragment
+        <action android:id="@+id/action_questionsFragment_to_resultsFragment" />
+        -->
         <action
-            android:id="@+id/action_questionsFragment_to_resultsFragment"
-            app:destination="@id/resultsFragment" />
+            android:id="@+id/action_questionsFragment_to_mainActivity"
+            app:destination="@id/mainActivity" />
     </fragment>
 
     <fragment
@@ -33,8 +36,6 @@
             app:argType="string"
             />
 
-        <action
-            android:id="@+id/action_resultsFragment_to_mainActivity"
-            app:destination="@id/mainActivity" />
+        <action android:id="@+id/action_resultsFragment_to_mainActivity" />
     </fragment>
 </navigation>

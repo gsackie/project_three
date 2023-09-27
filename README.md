@@ -20,7 +20,9 @@ The following required functionality is completed:
 ## Notes
 
 SAFEARGS PLUGIN IS IMPLEMENTED IN MY CODE BUT IS CAUSING A CRASH
+
 The Safearg implementations are commented out
+
 Video is not gif. The screen capture application I use is charging for downloads and I'm not able to renew my subscription. 
 
 Copyright [2023] [George Sackie]

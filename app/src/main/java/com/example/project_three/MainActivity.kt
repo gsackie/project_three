@@ -3,13 +3,8 @@ import android.widget.Button
 import android.widget.RadioGroup
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
-import androidx.navigation.NavController
 import androidx.navigation.findNavController
-import androidx.navigation.fragment.NavHostFragment
-import androidx.navigation.ui.AppBarConfiguration
-import androidx.navigation.ui.NavigationUI
 import com.example.project_three.R
-
 
 class MainActivity : AppCompatActivity() {
 
@@ -38,18 +33,17 @@ class MainActivity : AppCompatActivity() {
                 else -> "Addition" // Default to Addition if nothing is selected
             }
 
-            val numberOfQuestions = findViewById<TextView>(R.id.numberOfQuestions).text.toString().toInt()
+            val numberOfQuestions =
+                findViewById<TextView>(R.id.numberOfQuestions).text.toString().toInt()
 
-            // Create a bundle to pass data to the QuestionsFragment
-            val bundle = Bundle()
-            bundle.putString("difficulty", selectedDifficulty)
-            bundle.putString("operation", selectedOperation)
-            bundle.putInt("numberOfQuestions", numberOfQuestions)
-
-            // Navigate to the QuestionsFragment with the selected options
-            val navController = findNavController(R.id.nav_host_fragment)
-            navController.navigate(R.id.action_mainActivity_to_questionsFragment)
-
+            // Use SafeArgs to create the action and pass data to QuestionsFragment
+            val action =
+                MainFragmentDirections.actionMainActivityToQuestionsFragment(
+                    selectedDifficulty,
+                    selectedOperation,
+                    numberOfQuestions
+                )
+            findNavController(R.id.nav_host_fragment).navigate(action)
         }
     }
 }

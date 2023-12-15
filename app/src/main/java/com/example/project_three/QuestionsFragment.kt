@@ -46,9 +46,15 @@ class QuestionsFragment : Fragment() {
         incorrectSoundPlayer = MediaPlayer.create(requireContext(), R.raw.negative)
 
 
+        // Retrieve the number of questions from SafeArgs
+        val numQuestions = requireArguments().getInt("numberOfQuestions")
+
+        // Retrieve selected difficulty and operation from SafeArgs
+        val difficulty = requireArguments().getString("difficulty")
+        val operation = requireArguments().getString("operation")
 
         // Retrieve the number of questions from the fragment arguments, default to 0 if not provided
-        val numQuestions = arguments?.getInt("numberOfQuestions") ?: 0
+        //val numQuestions = arguments?.getInt("numberOfQuestions") ?: 0
 
         // Find the difficulty and operation radio groups in the layout
         val difficultyRadioGroup = view.findViewById<RadioGroup>(R.id.difficultyRadioGroup)
@@ -63,8 +69,8 @@ class QuestionsFragment : Fragment() {
         val operationRadioButton = view.findViewById<RadioButton>(selectedOperationRadioButtonId)
 
         // Get the text of the selected difficulty and operation
-        val difficulty = difficultyRadioButton.text.toString().toLowerCase()
-        val operation = operationRadioButton.text.toString().toLowerCase()
+       // val difficulty = difficultyRadioButton.text.toString().toLowerCase()
+        //val operation = operationRadioButton.text.toString().toLowerCase()
 
 
         // Find the answer EditText in the layout
@@ -118,13 +124,7 @@ class QuestionsFragment : Fragment() {
     //This is the code to implement SafeArgs
     //
 
-    /*
-        // Retrieve the number of questions from SafeArgs
-        val numQuestions = args.numberOfQuestions
 
-        // Retrieve selected difficulty and operation from SafeArgs
-        val difficulty = args.difficulty
-        val operation = args.operation
 
       // Navigate to MainActivity using SafeArgs
                 val action = QuestionsFragmentDirections.actionQuestionsFragmentToMainActivity(
@@ -134,7 +134,9 @@ class QuestionsFragment : Fragment() {
                 )
 
                 findNavController().navigate(action)
-     */
+
+
+
 
     // This function displays the current question on the screen
     private fun showQuestion(question: Question) {

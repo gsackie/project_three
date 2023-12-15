@@ -41,6 +41,13 @@ class MainActivity : AppCompatActivity() {
             bundle.putString("operation", selectedOperation)
             bundle.putInt("numberOfQuestions", numberOfQuestions)
 
+            // Use SafeArgs to navigate to the QuestionsFragment
+            val action = MainNavGraphDirections.actionGlobalQuestionsFragment(
+                numberOfQuestions = numberOfQuestions,
+                difficulty = selectedDifficulty,
+                operation = selectedOperation
+            )
+            findNavController(R.id.nav_host_fragment).navigate(action)
 
             //This is the safeargs implementation
             /*
